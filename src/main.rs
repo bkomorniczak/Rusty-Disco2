@@ -1,5 +1,6 @@
-mod statistical_analysis;
 mod ceasar;
+mod brute_force;
+
 use clap::{App, Arg};
 use std::{fs, io};
 

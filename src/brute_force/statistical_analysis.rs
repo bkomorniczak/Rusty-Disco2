@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io;
 use std::io::{BufRead, BufReader};
 
-fn count_ngrams(text: &str, n: u32) -> Vec<(String, u32)> {
+pub fn count_ngrams(text: &str, n: u32) -> Vec<(String, u32)> {
     let mut counts = HashMap::new();
     let chars = text.chars()
         .filter(|c| c.is_alphabetic())
@@ -19,14 +19,14 @@ fn count_ngrams(text: &str, n: u32) -> Vec<(String, u32)> {
     counts_vec
 }
 
-fn save_ngram_counts(filename: &str, counts: &[(String, u32)]) -> io::Result<()> {
+pub fn save_ngram_counts(filename: &str, counts: &[(String, u32)]) -> io::Result<()> {
     let mut file = File::create(filename)?;
     for (ngram, count) in counts.iter() {
         writeln!(file, "{} {}", ngram, count)?;
     }
     Ok(())
 }
-fn sum_values_in_file(filename: &str) -> io::Result<u32> {
+pub fn sum_values_in_file(filename: &str) -> io::Result<u32> {
     let file = File::open(filename)?;
     let reader = BufReader::new(file);
 
@@ -43,7 +43,7 @@ fn sum_values_in_file(filename: &str) -> io::Result<u32> {
 
     Ok(sum)
 }
-fn calculate_and_save_ngram_probability(input_file: &str, output_file: &str) -> io::Result<()> {
+pub fn calculate_and_save_ngram_probability(input_file: &str, output_file: &str) -> io::Result<()> {
     let total_count = sum_values_in_file(input_file)?;
     let inputfile = File::open(input_file)?;
     let reader = BufReader::new(inputfile);
@@ -63,7 +63,7 @@ fn calculate_and_save_ngram_probability(input_file: &str, output_file: &str) -> 
 
     Ok(())
 }
-fn calculate_t(n_grams: &HashMap<String, u32>, total_ngrams: u32, probabilities: &HashMap<String, f64>) -> f64 {
+pub fn calculate_t(n_grams: &HashMap<String, u32>, total_ngrams: u32, probabilities: &HashMap<String, f64>) -> f64 {
     let mut t = 0.0;
     for (n_gram, &count) in n_grams {
         if let Some(&probability) = probabilities.get(n_gram) {
@@ -75,7 +75,7 @@ fn calculate_t(n_grams: &HashMap<String, u32>, total_ngrams: u32, probabilities:
     t
 }
 
-fn read_probabilities(filename: &str) -> io::Result<HashMap<String, f64>> {
+pub fn read_probabilities(filename: &str) -> io::Result<HashMap<String, f64>> {
     let file = File::open(filename)?;
     let reader = BufReader::new(file);
     let mut probabilities = HashMap::new();
