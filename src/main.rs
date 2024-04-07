@@ -1,17 +1,9 @@
+mod statistical_analysis;
+mod ceasar;
 use clap::{App, Arg};
 use std::{fs, io};
 
-fn caesar_cipher(input: &str, key: i32) -> String {
-    input.to_uppercase()
-        .chars()
-        .filter(|c| c.is_alphabetic())
-        .map(|c| {
-            let first_letter = b'A';
-            let shifted = ((c as u8 - first_letter + (key.rem_euclid(26) as u8))).rem_euclid(26) + first_letter;
-            shifted as char
-        })
-        .collect()
-}
+
 
 fn main() -> io::Result<()> {
     let matches = App::new("Cezar")
@@ -60,9 +52,9 @@ fn main() -> io::Result<()> {
 
     let input_text = fs::read_to_string(input_file).expect("Error reading input file");
     let processed_text = if is_encrypt {
-        caesar_cipher(&input_text, key)
+        ceasar::cipher(&input_text, key)
     } else if is_decrypt {
-        caesar_cipher(&input_text, -key)
+        ceasar::cipher(&input_text, -key)
     } else {
         panic!("Either encrypt or decrypt must be specified");
     };
