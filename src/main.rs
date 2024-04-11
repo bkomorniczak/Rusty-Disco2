@@ -3,7 +3,7 @@ mod brute_force;
 
 use clap::{App, Arg};
 use std::{fs, io};
-
+use crate::brute_force::brute_force;
 
 
 fn main() -> io::Result<()> {
@@ -61,6 +61,8 @@ fn main() -> io::Result<()> {
     };
 
     fs::write(output_file, processed_text).expect("Error writing to output file");
-
+    if is_encrypt {
+        println!("{:?}", brute_force(&processed_text));
+    }
     Ok(())
 }
