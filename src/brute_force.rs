@@ -7,13 +7,13 @@ mod statistical_analysis;
 const PROBABILITY_FILE: &str = "src/resource/reference/expected-frequencies";
 
 
-fn count_chi_for_encrypted_text(encrypted: &str) -> HashMap<&String, f64> {
+fn count_chi_for_encrypted_text(encrypted: &str) -> HashMap<String, f64> {
     let ngrams_encrypted_text = count_ngrams(encrypted, 1);
     let ngrams_quantity = ngrams_encrypted_text.len() as f64;
     let mut encrypted_text_ngrams_frequencies = HashMap::new();
     for (key, value) in ngrams_encrypted_text.iter() {
         let single_frequency = *value as f64 / ngrams_quantity;
-        encrypted_text_ngrams_frequencies.insert(key, single_frequency);
+        encrypted_text_ngrams_frequencies.insert(key.clone(), single_frequency);
     }
     encrypted_text_ngrams_frequencies
 }

@@ -11,7 +11,8 @@ pub fn count_ngrams(text: &str, n: u32) -> HashMap<String, u32> {
         .collect::<Vec<_>>();
     for window in chars.windows(n as usize) {
         let ngram = window.iter().collect::<String>();
-        *counts.entry(ngram).or_insert(0) += 1;
+        let ngram_owned = ngram.to_string();
+        *counts.entry(ngram_owned).or_insert(0) += 1;
     }
     counts
 }
