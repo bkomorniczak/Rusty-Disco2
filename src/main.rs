@@ -60,7 +60,7 @@ fn main() -> io::Result<()> {
         panic!("Either encrypt or decrypt must be specified");
     };
 
-    fs::write(output_file, processed_text).expect("Error writing to output file");
+    fs::write(output_file, processed_text.clone()).expect("Error writing to output file");
     if is_encrypt {
         println!("{:?}", brute_force(&processed_text));
     }
