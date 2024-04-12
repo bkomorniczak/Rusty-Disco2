@@ -61,17 +61,17 @@ pub fn count_ngrams(text: &str, n: u32) -> HashMap<String, u32> {
 //
 //     Ok(())
 // }
-pub fn calculate_t(n_grams: &HashMap<String, u32>, total_ngrams: u32, probabilities: &HashMap<String, f64>) -> f64 {
-    let mut t = 0.0;
-    for (n_gram, &count) in n_grams {
-        if let Some(&probability) = probabilities.get(n_gram) {
-            let expected_count = total_ngrams as f64 * probability;
-            t += (count as f64 - expected_count).powi(2) / expected_count;
-        }
-    }
-
-    t
-}
+// pub fn calculate_t(n_grams: &HashMap<String, u32>, total_ngrams: u32, probabilities: &HashMap<String, f64>) -> f64 {
+//     let mut t = 0.0;
+//     for (n_gram, &count) in n_grams {
+//         if let Some(&probability) = probabilities.get(n_gram) {
+//             let expected_count = total_ngrams as f64 * probability;
+//             t += (count as f64 - expected_count).powi(2) / expected_count;
+//         }
+//     }
+//
+//     t
+// }
 
 pub fn read_probabilities(filename: &str) -> io::Result<HashMap<String, f64>> {
     let file = File::open(filename)?;

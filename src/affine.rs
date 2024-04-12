@@ -1,5 +1,3 @@
-use std::ffi::c_char;
-
 fn inverted_mod(a: i32) -> Option<i32> {
     let mut mn = (26, a);
     let mut xy = (0, 1);

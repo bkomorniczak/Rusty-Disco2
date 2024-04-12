@@ -59,11 +59,13 @@ fn main() -> io::Result<()> {
             Arg::with_name("a")
                 .short('a')
                 .help("Sets variable to affine cipher")
+                .takes_value(true)
         )
         .arg(
             Arg::with_name("b")
                 .short('b')
                 .help("Sets variable to affine cipher")
+                .takes_value(true)
         )
         .get_matches();
 
@@ -71,8 +73,12 @@ fn main() -> io::Result<()> {
     let is_decrypt = matches.is_present("decrypt");
     let is_caesar = matches.is_present("caesar");
     let is_affine = matches.is_present("affine");
-    let a = matches.value_of("a").unwrap().parse::<i32>().expect("variable must be an integer");
-    let b = matches.value_of("b").unwrap().parse::<i32>().expect("variable must be an integer");;
+    let mut a = 0;
+    let mut b = 0;
+    if is_affine {
+        a = matches.value_of("a").unwrap().parse::<i32>().expect("variable must be an integer");
+        b = matches.value_of("b").unwrap().parse::<i32>().expect("variable must be an integer");
+    }
     let key = matches.value_of("key").unwrap().parse::<i32>().expect("Key must be an integer");
     let input_file = matches.value_of("input").unwrap();
     let output_file = matches.value_of("output").unwrap();
@@ -87,11 +93,12 @@ fn main() -> io::Result<()> {
     } else if is_decrypt {
         match (is_caesar, is_affine) {
             (true, false) => caesar::cipher(&input_text, -key),
-            (false, true) => { match affine::decrypt(&input_text, a, b) {
-            Some(text) => text,
-            None => panic!("Decryption failed due to invalid input"),
-        }
-        },
+            (false, true) => {
+                match affine::decrypt(&input_text, a, b) {
+                    Some(text) => text,
+                    None => panic!("Decryption failed due to invalid input"),
+                }
+            }
             _ => panic!("No decryption method specified")
         }
     } else {
@@ -99,7 +106,7 @@ fn main() -> io::Result<()> {
     };
 
     fs::write(output_file, processed_text.clone()).expect("Error writing to output file");
-    if is_encrypt {
+    if is_decrypt {
         println!("{:?}", brute_force(&processed_text));
     }
     Ok(())
