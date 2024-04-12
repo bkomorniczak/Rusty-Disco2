@@ -55,25 +55,45 @@ fn main() -> io::Result<()> {
                 .long("affine")
                 .help("Sets cipher mode to affine")
         )
+        .arg(
+            Arg::with_name("a")
+                .short('a')
+                .help("Sets variable to affine cipher")
+        )
+        .arg(
+            Arg::with_name("b")
+                .short('b')
+                .help("Sets variable to affine cipher")
+        )
         .get_matches();
 
     let is_encrypt = matches.is_present("encrypt");
     let is_decrypt = matches.is_present("decrypt");
     let is_caesar = matches.is_present("caesar");
     let is_affine = matches.is_present("affine");
+    let a = matches.value_of("a").unwrap().parse::<i32>().expect("variable must be an integer");
+    let b = matches.value_of("b").unwrap().parse::<i32>().expect("variable must be an integer");;
     let key = matches.value_of("key").unwrap().parse::<i32>().expect("Key must be an integer");
     let input_file = matches.value_of("input").unwrap();
     let output_file = matches.value_of("output").unwrap();
 
     let input_text = fs::read_to_string(input_file).expect("Error reading input file");
     let processed_text = if is_encrypt {
-        if is_caesar {
-            caesar::cipher(&input_text, key)
-        } else if is_affine {
-            affine::encrypt(&input_text, )
+        match (is_caesar, is_affine) {
+            (true, false) => caesar::cipher(&input_text, key),
+            (false, true) => affine::encrypt(&input_text, a, b),
+            _ => panic!("No encryption method specified"),
         }
     } else if is_decrypt {
-        caesar::cipher(&input_text, -key)
+        match (is_caesar, is_affine) {
+            (true, false) => caesar::cipher(&input_text, -key),
+            (false, true) => { match affine::decrypt(&input_text, a, b) {
+            Some(text) => text,
+            None => panic!("Decryption failed due to invalid input"),
+        }
+        },
+            _ => panic!("No decryption method specified")
+        }
     } else {
         panic!("Either encrypt or decrypt must be specified");
     };
