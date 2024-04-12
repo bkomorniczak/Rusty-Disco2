@@ -56,6 +56,11 @@ fn main() -> io::Result<()> {
                 .help("Sets cipher mode to affine")
         )
         .arg(
+            Arg::with_name("brute_force")
+                .long("brute")
+                .help("Runs bruteforce attack on input")
+        )
+        .arg(
             Arg::with_name("a")
                 .short('a')
                 .help("Sets variable to affine cipher")
@@ -73,18 +78,23 @@ fn main() -> io::Result<()> {
     let is_decrypt = matches.is_present("decrypt");
     let is_caesar = matches.is_present("caesar");
     let is_affine = matches.is_present("affine");
+    let is_brute_force = matches.is_present("brute_force");
     let mut a = 0;
     let mut b = 0;
     if is_affine {
         a = matches.value_of("a").unwrap().parse::<i32>().expect("variable must be an integer");
         b = matches.value_of("b").unwrap().parse::<i32>().expect("variable must be an integer");
     }
-    let key = matches.value_of("key").unwrap().parse::<i32>().expect("Key must be an integer");
+    let mut key: i32 = 0;
+    if matches.is_present("key") { key = matches.value_of("key").unwrap().parse::<i32>().expect("Key must be an integer"); }
     let input_file = matches.value_of("input").unwrap();
-    let output_file = matches.value_of("output").unwrap();
+    let mut output_file = "";
+    if matches.is_present("output") { output_file = matches.value_of("output").unwrap(); }
 
     let input_text = fs::read_to_string(input_file).expect("Error reading input file");
-    let processed_text = if is_encrypt {
+    let mut processed_text = "".parse::<String>().unwrap();
+     if !is_brute_force {
+         processed_text = if is_encrypt {
         match (is_caesar, is_affine) {
             (true, false) => caesar::cipher(&input_text, key),
             (false, true) => affine::encrypt(&input_text, a, b),
@@ -103,11 +113,11 @@ fn main() -> io::Result<()> {
         }
     } else {
         panic!("Either encrypt or decrypt must be specified");
-    };
+    }};
 
-    fs::write(output_file, processed_text.clone()).expect("Error writing to output file");
-    if is_decrypt {
-        println!("{:?}", brute_force(&processed_text));
+    if matches.is_present("output") { fs::write(output_file, processed_text.clone()).expect("Error writing to output file"); }
+    if is_brute_force {
+        println!("{:?}", brute_force(&input_text));
     }
     Ok(())
 }
