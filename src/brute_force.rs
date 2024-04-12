@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use crate::brute_force::statistical_analysis::{ count_ngrams, read_probabilities};
-use crate::ceasar;
+use crate::caesar;
 
 mod statistical_analysis;
 
@@ -35,7 +35,7 @@ pub fn brute_force(ciphertext: &str) -> (String, i32, f64) {
     let mut best_match = (String::new(), 0, f64::MAX);
 
     for key in 1..=25 {
-        let decrypted_text = ceasar::cipher(ciphertext, -key);
+        let decrypted_text = caesar::cipher(ciphertext, -key);
         let observed_frequencies_borrowed = count_chi_for_encrypted_text(&decrypted_text);
         let observed_frequencies: HashMap<String, f64> = observed_frequencies_borrowed
             .iter()
