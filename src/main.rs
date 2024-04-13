@@ -4,8 +4,9 @@ mod affine;
 
 use clap::{App, Arg};
 use std::{fs, io};
-use crate::affine::brute_force_affine;
+use crate::affine::{brute_force_affine, decrypt, encrypt};
 use crate::brute_force::brute_force_caesar;
+use crate::caesar::cipher;
 
 
 fn main() -> io::Result<()> {
@@ -100,41 +101,35 @@ fn main() -> io::Result<()> {
 
 
 
-
-    let mut processed_text = "".parse::<String>().unwrap();
-     if !is_brute_force {
-         processed_text = if is_encrypt {
-        match (is_caesar, is_affine) {
-            (true, false) => caesar::cipher(&input_text, key),
-            (false, true) => affine::encrypt(&input_text, a, b),
-            _ => panic!("No encryption method specified"),
+    let processed_text = if is_brute_force {
+        if is_caesar {
+            format!("{:?}", brute_force_caesar(&input_text))
+        }else if is_affine {
+            format!("{:?}", brute_force_affine(&input_text))
+        } else {
+            panic!("No brute force method specified!")
         }
-    } else if is_decrypt {
+    } else if is_encrypt || is_decrypt {
+        let encrypt_or_decrypt = if is_encrypt {"Encrypting"} else {"Decrypting"};
+        println!("{} with {} cipher...", encrypt_or_decrypt, if is_caesar{"Caesar"}else {"Affine"});
+
         match (is_caesar, is_affine) {
-            (true, false) => caesar::cipher(&input_text, -key),
-            (false, true) => {
-                match affine::decrypt(&input_text, a, b) {
-                    Some(text) => text,
-                    None => panic!("Decryption failed due to invalid input"),
-                }
+            (true, false) => cipher(&input_text, if is_encrypt { key } else {-key}),
+            (false,true) => if is_encrypt {
+                encrypt(&input_text, a, b)
+            }else {
+                decrypt(&input_text,a,b).unwrap_or_else(|| panic!("Decryption failed, invalid input"))
             }
-            _ => panic!("No decryption method specified")
+            _ => panic!("Either caesar or affine must be specified")
         }
     } else {
-        panic!("Either encrypt or decrypt must be specified");
-    }};
+        panic!("Encryption or decryption must be specified!")
+    };
 
     if let Some(output_file) = matches.value_of("output") {
         fs::write(output_file, &processed_text)
             .expect("Failed to write to output file");
     }
 
-    if is_brute_force && is_caesar {
-        println!("{:?}", brute_force_caesar(&input_text));
-    }
-
-    if is_brute_force && is_affine {
-        println!("{:?}", brute_force_affine(&input_text))
-    }
     Ok(())
 }
