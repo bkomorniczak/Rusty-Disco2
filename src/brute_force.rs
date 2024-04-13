@@ -30,7 +30,7 @@ fn calculate_chi_squared(observed: &HashMap<String, f64>, expected: &HashMap<Str
 }
 
 
-pub fn brute_force(ciphertext: &str) -> (String, i32, f64) {
+pub fn brute_force_caesar(ciphertext: &str) -> (String, i32, f64) {
     let expected_frequencies = read_probabilities(PROBABILITY_FILE).unwrap();
     let mut best_match = (String::new(), 0, f64::MAX);
 

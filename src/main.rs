@@ -4,7 +4,7 @@ mod affine;
 
 use clap::{App, Arg};
 use std::{fs, io};
-use crate::brute_force::brute_force;
+use crate::brute_force::brute_force_caesar;
 
 
 fn main() -> io::Result<()> {
@@ -117,7 +117,7 @@ fn main() -> io::Result<()> {
 
     if matches.is_present("output") { fs::write(output_file, processed_text.clone()).expect("Error writing to output file"); }
     if is_brute_force {
-        println!("{:?}", brute_force(&input_text));
+        println!("{:?}", brute_force_caesar(&input_text));
     }
     Ok(())
 }
