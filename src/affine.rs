@@ -28,13 +28,12 @@ pub fn encrypt(text: &str, a: i32, b: i32) -> String {
 
 
 pub fn decrypt(text: &str, a: i32, b: i32) -> Option<String> {
-    let m = M;
     inverted_mod(a).map(|a_inv| {
         text.chars()
             .map(|c| {
                 if c.is_alphabetic() {
                     let x = c as i32 - 'A' as i32;
-                    let y = ((x - b) * a_inv % m) % m;
+                    let y = ((x - b) * a_inv % M + M) % M;
                     (y + 'A' as i32) as u8 as char
                 } else {
                     c
@@ -45,12 +44,11 @@ pub fn decrypt(text: &str, a: i32, b: i32) -> Option<String> {
 }
 
 pub fn brute_force_affine(ciphertext: &str) -> Vec<(String, i32, i32)> {
-    let m = M;
     let valid_a = [1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23, 25];
 
     let mut results = Vec::new();
     for &a in valid_a.iter() {
-        for b in 0..m {
+        for b in 0..M {
             if let Some(plaintext) = decrypt(ciphertext, a, b) {
                 results.push((plaintext, a, b));
             }
