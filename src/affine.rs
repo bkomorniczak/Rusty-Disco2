@@ -1,3 +1,5 @@
+const M: i32 = 26;
+
 fn inverted_mod(a: i32) -> Option<i32> {
     let mut mn = (26, a);
     let mut xy = (0, 1);
@@ -13,7 +15,7 @@ fn inverted_mod(a: i32) -> Option<i32> {
 }
 
 pub fn encrypt(text: &str, a: i32, b: i32) -> String {
-    let m = 26;
+    let m = M;
     text.to_uppercase().chars()
         .filter(|c| c.is_alphabetic())
         .map(|c| {
@@ -24,8 +26,9 @@ pub fn encrypt(text: &str, a: i32, b: i32) -> String {
         .collect()
 }
 
+
 pub fn decrypt(text: &str, a: i32, b: i32) -> Option<String> {
-    let m = 26;
+    let m = M;
     inverted_mod(a).map(|a_inv| {
         text.chars()
             .map(|c| {
@@ -42,14 +45,14 @@ pub fn decrypt(text: &str, a: i32, b: i32) -> Option<String> {
 }
 
 pub fn brute_force_affine(ciphertext: &str) -> Vec<(String, i32, i32)> {
-    let m =26;
-    let valid_a = [1,3,5,7,9,11,15,17,19,21,23,25];
+    let m = M;
+    let valid_a = [1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23, 25];
 
     let mut results = Vec::new();
     for &a in valid_a.iter() {
         for b in 0..m {
-            if let Some(plaintext) = decrypt(ciphertext, a, b,m) {
-                results.push((plaintext,a,b));
+            if let Some(plaintext) = decrypt(ciphertext, a, b) {
+                results.push((plaintext, a, b));
             }
         }
     }
