@@ -1,4 +1,6 @@
-`cargo run -- -i src/resource/encrypted.txt --brute `
+`cargo run -- -i src/resource/encrypted.txt -o src/resource/brute_decrypted.txt --brute --caesar`
+
+`cargo run -- -i src/resource/encrypted.txt -o src/resource/brute_decrypted.txt --brute --affine`
 
 `cargo run -- -i src/resource/encrypted.txt -o src/resource/decrypted.txt -k 3 -d --caesar   
 `

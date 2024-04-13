@@ -4,8 +4,8 @@ mod affine;
 
 use clap::{App, Arg};
 use std::{fs, io};
-use crate::affine::{brute_force_affine, decrypt, encrypt, has_modular_inverse};
-use crate::brute_force::brute_force_caesar;
+use crate::affine::{decrypt, encrypt, has_modular_inverse};
+use crate::brute_force::{brute_force_affine, brute_force_caesar};
 use crate::caesar::cipher;
 
 
@@ -76,7 +76,7 @@ fn main() -> io::Result<()> {
     let is_brute_force = matches.is_present("brute_force");
 
 
-    let (a, b) = if is_affine {
+    let (a, b) = if is_affine && ! is_brute_force {
         let a = matches.value_of("a")
             .expect("Variable a is requiered for affine cypher")
             .parse::<i32>()

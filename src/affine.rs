@@ -1,3 +1,5 @@
+
+
 const M: i32 = 26;
 
 fn inverted_mod(a: i32) -> Option<i32> {
@@ -43,19 +45,7 @@ pub fn decrypt(text: &str, a: i32, b: i32) -> Option<String> {
     })
 }
 
-pub fn brute_force_affine(ciphertext: &str) -> Vec<(String, i32, i32)> {
-    let valid_a = [1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23, 25];
 
-    let mut results = Vec::new();
-    for &a in valid_a.iter() {
-        for b in 0..M {
-            if let Some(plaintext) = decrypt(ciphertext, a, b) {
-                results.push((plaintext, a, b));
-            }
-        }
-    }
-    results
-}
 
 pub fn has_modular_inverse(a: i32) -> bool {
     gcd(a, M) == 1
