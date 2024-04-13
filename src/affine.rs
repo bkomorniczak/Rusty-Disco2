@@ -1,5 +1,3 @@
-
-
 const M: i32 = 26;
 
 fn inverted_mod(a: i32) -> Option<i32> {
@@ -17,12 +15,11 @@ fn inverted_mod(a: i32) -> Option<i32> {
 }
 
 pub fn encrypt(text: &str, a: i32, b: i32) -> String {
-    let m = M;
     text.to_uppercase().chars()
         .filter(|c| c.is_alphabetic())
         .map(|c| {
             let x = c as i32 - 'A' as i32;
-            let y = ((a * x + b) % m + m) % m;
+            let y = ((a * x + b) % M + M) % M;
             (y + 'A' as i32) as u8 as char
         })
         .collect()
